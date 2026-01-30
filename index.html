@@ -27,9 +27,9 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.6);
         }
 
-        .container { padding: 20px; max-width: 600px; margin: auto; }
+        .container { padding: 20px; max-width: 600px; margin: auto; padding-bottom: 100px; }
 
-        /* ESTILO ACORDEÓN (Secciones expandibles) */
+        /* ESTILO ACORDEÓN */
         details {
             background: rgba(255, 255, 255, 0.05);
             margin-bottom: 15px;
@@ -45,26 +45,21 @@
             font-weight: bold;
             color: #fff200;
             cursor: pointer;
-            list-style: none; /* Quita la flecha por defecto en algunos navegadores */
+            list-style: none;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         summary::after {
-            content: '▼'; /* Flecha personalizada */
+            content: '▼';
             font-size: 0.8rem;
             color: #e61e25;
             transition: transform 0.3s;
         }
 
         details[open] summary::after {
-            transform: rotate(180deg); /* La flecha gira al abrir */
-        }
-
-        details[open] {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: #fff200;
+            transform: rotate(180deg);
         }
 
         /* DISEÑO DE LA LISTA INTERNA */
@@ -87,16 +82,51 @@
             border-radius: 20px;
         }
 
-        /* BOTONES DE CONTACTO */
-        .info-basica {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 20px;
-            border-radius: 20px;
-            margin-top: 50px;
-            border: 1px solid rgba(255, 242, 0, 0.2);
-            margin-bottom: 40px;
+        /* BUSCADOR FLOTANTE 🔍 */
+        .buscador-flotante {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
         }
 
+        #inputBusqueda {
+            width: 0;
+            opacity: 0;
+            padding: 12px;
+            border-radius: 25px;
+            border: 2px solid #fff200;
+            background: #222;
+            color: white;
+            transition: all 0.4s ease;
+            outline: none;
+        }
+
+        /* Clase que se activa con JavaScript */
+        .buscador-flotante.activo #inputBusqueda {
+            width: 200px;
+            opacity: 1;
+            margin-right: 10px;
+        }
+
+        .btn-buscar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #e61e25;
+            color: white;
+            border: 2px solid #fff200;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* BOTONES DE CONTACTO */
         .btn {
             display: block;
             text-align: center;
@@ -108,7 +138,6 @@
             margin: 10px 0;
             transition: 0.3s;
         }
-
         .btn-mapa { background-color: #e61e25; color: white; }
         .btn-whatsapp { background-color: #25d366; color: white; }
     </style>
@@ -120,7 +149,6 @@
     </header>
 
     <div class="container">
-        
         <h2 style="color: #fff200; text-transform: uppercase; margin-bottom: 20px;">Menú Digital 📜</h2>
 
         <details>
@@ -172,14 +200,52 @@
 
         <div class="info-basica">
             <h2 style="color: #fff200; margin-top: 0;">Contacto 📍</h2>
-            <a href="https://www.google.com/maps/search/?api=1&query=Ave+253+Bauta+Artemisa" target="_blank" class="btn btn-mapa">Ver en Mapa</a>
+            <a href="https://www.google.com/maps/search/?api=1&query=https://maps.app.goo.gl/jLZzkc4DjArtMZvAA" target="_blank" class="btn btn-mapa">Ver en Mapa</a>
             <a href="https://wa.me/5350000000" class="btn btn-whatsapp">Pedir WhatsApp</a>
-            
             <p><strong>Lunes a Jueves:</strong> 11am - 12pm</p>
             <p><strong>Viernes a Domingo:</strong> 11am - 1am</p>
         </div>
-
     </div>
+
+    <div class="buscador-flotante" id="contenedorBuscador">
+        <input type="text" id="inputBusqueda" placeholder="Buscar plato..." onkeyup="filtrarMenu()">
+        <button class="btn-buscar" onclick="toggleBuscador()">🔍</button>
+    </div>
+
+    <script>
+        // Función para abrir y cerrar el buscador
+        function toggleBuscador() {
+            const buscador = document.getElementById('contenedorBuscador');
+            const input = document.getElementById('inputBusqueda');
+            buscador.classList.toggle('activo');
+            if(buscador.classList.contains('activo')) {
+                input.focus();
+            }
+        }
+
+        // Función que filtra los platos en tiempo real
+        function filtrarMenu() {
+            const textoBusqueda = document.getElementById('inputBusqueda').value.toLowerCase();
+            const platos = document.getElementsByTagName('li');
+            const secciones = document.querySelectorAll('details');
+
+            for (let i = 0; i < platos.length; i++) {
+                const nombrePlato = platos[i].innerText.toLowerCase();
+                if (nombrePlato.includes(textoBusqueda)) {
+                    platos[i].style.display = ""; // Se muestra
+                } else {
+                    platos[i].style.display = "none"; // Se oculta
+                }
+            }
+
+            // Si el cliente escribe algo, abrimos todas las secciones automáticamente
+            if (textoBusqueda.length > 0) {
+                secciones.forEach(sec => sec.open = true);
+            } else {
+                secciones.forEach(sec => sec.open = false);
+            }
+        }
+    </script>
 
 </body>
 </html>
