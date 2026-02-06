@@ -27,7 +27,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.6);
         }
 
-        .container { padding: 20px; max-width: 600px; margin: auto; padding-bottom: 100px; }
+        .container { padding: 20px; max-width: 600px; margin: auto; padding-bottom: 120px; }
 
         /* ESTILO ACORDEÓN */
         details {
@@ -62,11 +62,11 @@
             transform: rotate(180deg);
         }
 
-        /* DISEÑO DE LA LISTA INTERNA */
+        /* DISEÑO DE LA LISTA Y CARRITO */
         ul { list-style: none; padding: 10px 18px 18px 18px; margin: 0; }
         
         li { 
-            margin: 8px 0; 
+            margin: 12px 0; 
             padding: 12px; 
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
@@ -74,25 +74,108 @@
             align-items: center;
         }
 
+        .info-plato { display: flex; flex-direction: column; flex-grow: 1; }
+
         .precio {
             font-weight: bold;
             color: #fff200;
-            background: rgba(0,0,0,0.3);
-            padding: 4px 10px;
-            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 4px;
         }
 
-        /* BUSCADOR FLOTANTE 🔍 */
-        .buscador-flotante {
+        .controles-carrito { display: flex; align-items: center; gap: 12px; }
+
+        .btn-cant {
+            background: #e61e25;
+            border: 1px solid #fff200;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cantidad { font-weight: bold; min-width: 20px; text-align: center; }
+
+        /* SECCIÓN DE NOTAS */
+        #seccionNotas {
+            display: none;
+            margin-top: 25px;
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #fff200;
+        }
+
+        #notasPedido {
+            width: 100%;
+            height: 80px;
+            background: #222;
+            color: white;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        /* BUSCADOR Y BOTONES FLOTANTES */
+        .botones-flotantes {
             position: fixed;
             bottom: 25px;
             right: 25px;
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            gap: 15px;
             z-index: 1000;
         }
 
+        .btn-flotante {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid #fff200;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .btn-buscar { background-color: #444; }
+        
+        .btn-pedido { 
+            background-color: #25d366; 
+            display: none; 
+            position: relative; 
+            animation: bounce 0.5s infinite alternate;
+        }
+
+        @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.08); } }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e61e25;
+            color: white;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+
         #inputBusqueda {
+            position: absolute;
+            right: 75px;
+            bottom: 5px;
             width: 0;
             opacity: 0;
             padding: 12px;
@@ -104,29 +187,9 @@
             outline: none;
         }
 
-        /* Clase que se activa con JavaScript */
-        .buscador-flotante.activo #inputBusqueda {
-            width: 200px;
-            opacity: 1;
-            margin-right: 10px;
-        }
+        .activo #inputBusqueda { width: 220px; opacity: 1; }
 
-        .btn-buscar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: #e61e25;
-            color: white;
-            border: 2px solid #fff200;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* BOTONES DE CONTACTO */
+        /* CONTACTO */
         .btn {
             display: block;
             text-align: center;
@@ -154,98 +217,194 @@
         <details>
             <summary>Entrantes 🥟</summary>
             <ul>
-                <li><span>Croquetas Bechamel</span> <span class="precio">$5.00</span></li>
-                <li><span>Frituras de Malanga</span> <span class="precio">$4.50</span></li>
+                <li data-nombre="Croquetas Bechamel" data-precio="5.00">
+                    <div class="info-plato"><span>Croquetas Bechamel</span><span class="precio">$5.00</span></div>
+                    <div class="controles-carrito">
+                        <button class="btn-cant" onclick="cambiarCantidad(this, -1)">-</button>
+                        <span class="cantidad">0</span>
+                        <button class="btn-cant" onclick="cambiarCantidad(this, 1)">+</button>
+                    </div>
+                </li>
+                <li data-nombre="Frituras de Malanga" data-precio="4.50">
+                    <div class="info-plato"><span>Frituras de Malanga</span><span class="precio">$4.50</span></div>
+                    <div class="controles-carrito">
+                        <button class="btn-cant" onclick="cambiarCantidad(this, -1)">-</button>
+                        <span class="cantidad">0</span>
+                        <button class="btn-cant" onclick="cambiarCantidad(this, 1)">+</button>
+                    </div>
+                </li>
             </ul>
         </details>
 
         <details>
             <summary>Principal 🍽️</summary>
             <ul>
-                <li><span>Arroz con Pollo</span> <span class="precio">$12.00</span></li>
-                <li><span>Lomo Cerdo Asado</span> <span class="precio">$15.00</span></li>
+                <li data-nombre="Arroz con Pollo" data-precio="12.00">
+                    <div class="info-plato"><span>Arroz con Pollo</span><span class="precio">$12.00</span></div>
+                    <div class="controles-carrito">
+                        <button class="btn-cant" onclick="cambiarCantidad(this, -1)">-</button>
+                        <span class="cantidad">0</span>
+                        <button class="btn-cant" onclick="cambiarCantidad(this, 1)">+</button>
+                    </div>
+                </li>
+                <li data-nombre="Lomo Cerdo Asado" data-precio="15.00">
+                    <div class="info-plato"><span>Lomo Cerdo Asado</span><span class="precio">$15.00</span></div>
+                    <div class="controles-carrito">
+                        <button class="btn-cant" onclick="cambiarCantidad(this, -1)">-</button>
+                        <span class="cantidad">0</span>
+                        <button class="btn-cant" onclick="cambiarCantidad(this, 1)">+</button>
+                    </div>
+                </li>
             </ul>
         </details>
 
         <details>
             <summary>Postres 🍰</summary>
             <ul>
-                <li><span>Flan de la Casa</span> <span class="precio">$4.00</span></li>
+                <li data-nombre="Flan de la Casa" data-precio="4.00">
+                    <div class="info-plato"><span>Flan de la Casa</span><span class="precio">$4.00</span></div>
+                    <div class="controles-carrito">
+                        <button class="btn-cant" onclick="cambiarCantidad(this, -1)">-</button>
+                        <span class="cantidad">0</span>
+                        <button class="btn-cant" onclick="cambiarCantidad(this, 1)">+</button>
+                    </div>
+                </li>
             </ul>
         </details>
 
         <details>
             <summary>Bebidas 🍺</summary>
             <ul>
-                <li><span>Refrescos</span> <span class="precio">$2.50</span></li>
-                <li><span>Cerveza Fría</span> <span class="precio">$3.50</span></li>
+                <li data-nombre="Refrescos" data-precio="2.50">
+                    <div class="info-plato"><span>Refrescos</span><span class="precio">$2.50</span></div>
+                    <div class="controles-carrito">
+                        <button class="btn-cant" onclick="cambiarCantidad(this, -1)">-</button>
+                        <span class="cantidad">0</span>
+                        <button class="btn-cant" onclick="cambiarCantidad(this, 1)">+</button>
+                    </div>
+                </li>
+                <li data-nombre="Cerveza Fría" data-precio="3.50">
+                    <div class="info-plato"><span>Cerveza Fría</span><span class="precio">$3.50</span></div>
+                    <div class="controles-carrito">
+                        <button class="btn-cant" onclick="cambiarCantidad(this, -1)">-</button>
+                        <span class="cantidad">0</span>
+                        <button class="btn-cant" onclick="cambiarCantidad(this, 1)">+</button>
+                    </div>
+                </li>
             </ul>
         </details>
 
         <details>
             <summary>Coctelería 🍸</summary>
             <ul>
-                <li><span>Mojito Clásico</span> <span class="precio">$6.00</span></li>
-                <li><span>Daiquirí</span> <span class="precio">$6.00</span></li>
+                <li data-nombre="Mojito Clásico" data-precio="6.00">
+                    <div class="info-plato"><span>Mojito Clásico</span><span class="precio">$6.00</span></div>
+                    <div class="controles-carrito">
+                        <button class="btn-cant" onclick="cambiarCantidad(this, -1)">-</button>
+                        <span class="cantidad">0</span>
+                        <button class="btn-cant" onclick="cambiarCantidad(this, 1)">+</button>
+                    </div>
+                </li>
+                <li data-nombre="Daiquirí" data-precio="6.00">
+                    <div class="info-plato"><span>Daiquirí</span><span class="precio">$6.00</span></div>
+                    <div class="controles-carrito">
+                        <button class="btn-cant" onclick="cambiarCantidad(this, -1)">-</button>
+                        <span class="cantidad">0</span>
+                        <button class="btn-cant" onclick="cambiarCantidad(this, 1)">+</button>
+                    </div>
+                </li>
             </ul>
         </details>
 
         <details>
             <summary>Ofertas / Botellas 🍾</summary>
             <ul>
-                <li><span>Botella Ron</span> <span class="precio">$35.00</span></li>
-                <li><span>Combo Fiesta</span> <span class="precio">$50.00</span></li>
+                <li data-nombre="Botella Ron" data-precio="35.00">
+                    <div class="info-plato"><span>Botella Ron</span><span class="precio">$35.00</span></div>
+                    <div class="controles-carrito">
+                        <button class="btn-cant" onclick="cambiarCantidad(this, -1)">-</button>
+                        <span class="cantidad">0</span>
+                        <button class="btn-cant" onclick="cambiarCantidad(this, 1)">+</button>
+                    </div>
+                </li>
+                <li data-nombre="Combo Fiesta" data-precio="50.00">
+                    <div class="info-plato"><span>Combo Fiesta</span><span class="precio">$50.00</span></div>
+                    <div class="controles-carrito">
+                        <button class="btn-cant" onclick="cambiarCantidad(this, -1)">-</button>
+                        <span class="cantidad">0</span>
+                        <button class="btn-cant" onclick="cambiarCantidad(this, 1)">+</button>
+                    </div>
+                </li>
             </ul>
         </details>
+
+        <div id="seccionNotas">
+            <h3 style="color: #fff200; margin-top: 0;">Detalles del Envío 🚚</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 5px;">Dirección completa o notas especiales:</p>
+            <textarea id="notasPedido" placeholder="Ej: Calle 20 e/ 31 y 33, casa azul. Sin picante la comida."></textarea>
+        </div>
 
         <div class="info-basica">
             <h2 style="color: #fff200; margin-top: 0;">Contacto 📍</h2>
             <a href="https://www.google.com/maps/search/?api=1&query=https://maps.app.goo.gl/jLZzkc4DjArtMZvAA" target="_blank" class="btn btn-mapa">Ver en Mapa</a>
-            <a href="https://wa.me/5350000000" class="btn btn-whatsapp">Pedir WhatsApp</a>
+            <a href="https://wa.me/5354978188" class="btn btn-whatsapp">Pedir WhatsApp</a>
             <p><strong>Lunes a Jueves:</strong> 11am - 12pm</p>
             <p><strong>Viernes a Domingo:</strong> 11am - 1am</p>
         </div>
     </div>
 
-    <div class="buscador-flotante" id="contenedorBuscador">
+    <div class="botones-flotantes" id="contenedorBusqueda">
         <input type="text" id="inputBusqueda" placeholder="Buscar plato..." onkeyup="filtrarMenu()">
-        <button class="btn-buscar" onclick="toggleBuscador()">🔍</button>
+        
+        <button class="btn-flotante btn-pedido" id="btnPedido" onclick="enviarWhatsApp()">
+            🛒 <span class="badge" id="badgeCarrito">0</span>
+        </button>
+        
+        <button class="btn-flotante btn-buscar" onclick="toggleBuscador()">🔍</button>
     </div>
 
     <script>
-        // Función para abrir y cerrar el buscador
-        function toggleBuscador() {
-            const buscador = document.getElementById('contenedorBuscador');
-            const input = document.getElementById('inputBusqueda');
-            buscador.classList.toggle('activo');
-            if(buscador.classList.contains('activo')) {
-                input.focus();
+        let carrito = {};
+
+        function cambiarCantidad(btn, cambio) {
+            const li = btn.closest('li');
+            const nombre = li.getAttribute('data-nombre');
+            const precio = parseFloat(li.getAttribute('data-precio'));
+            const spanCant = li.querySelector('.cantidad');
+            
+            if (!carrito[nombre]) {
+                carrito[nombre] = { cantidad: 0, precio: precio };
             }
+
+            carrito[nombre].cantidad += cambio;
+
+            if (carrito[nombre].cantidad <= 0) {
+                carrito[nombre].cantidad = 0;
+                delete carrito[nombre];
+            }
+
+            spanCant.innerText = carrito[nombre] ? carrito[nombre].cantidad : 0;
+            actualizarInterfazCarrito();
         }
 
-        // Función que filtra los platos en tiempo real
-        function filtrarMenu() {
-            const textoBusqueda = document.getElementById('inputBusqueda').value.toLowerCase();
-            const platos = document.getElementsByTagName('li');
-            const secciones = document.querySelectorAll('details');
+        function actualizarInterfazCarrito() {
+            const totalItems = Object.values(carrito).reduce((acc, item) => acc + item.cantidad, 0);
+            const btnPedido = document.getElementById('btnPedido');
+            const badge = document.getElementById('badgeCarrito');
+            const seccionNotas = document.getElementById('seccionNotas');
 
-            for (let i = 0; i < platos.length; i++) {
-                const nombrePlato = platos[i].innerText.toLowerCase();
-                if (nombrePlato.includes(textoBusqueda)) {
-                    platos[i].style.display = ""; // Se muestra
-                } else {
-                    platos[i].style.display = "none"; // Se oculta
-                }
-            }
-
-            // Si el cliente escribe algo, abrimos todas las secciones automáticamente
-            if (textoBusqueda.length > 0) {
-                secciones.forEach(sec => sec.open = true);
+            if (totalItems > 0) {
+                btnPedido.style.display = 'flex';
+                badge.innerText = totalItems;
+                seccionNotas.style.display = 'block';
             } else {
-                secciones.forEach(sec => sec.open = false);
+                btnPedido.style.display = 'none';
+                seccionNotas.style.display = 'none';
             }
         }
-    </script>
 
-</body>
-</html>
+        function enviarWhatsApp() {
+            let mensaje = "¡Hola El Boom! 💥 Quisiera hacer un pedido:\n\n";
+            let total = 0;
+
+            for (const item in carrito) {
