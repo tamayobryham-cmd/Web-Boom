@@ -408,3 +408,50 @@
             let total = 0;
 
             for (const item in carrito) {
+                const subtotal = carrito[item].cantidad * carrito[item].precio;
+                mensaje += `✅ ${carrito[item].cantidad}x ${item} - $${subtotal.toFixed(2)}\n`;
+                total += subtotal;
+            }
+
+            const notas = document.getElementById('notasPedido').value;
+            if (notas) {
+                mensaje += `\n📝 *Notas/Dirección:* ${notas}`;
+            }
+
+            mensaje += `\n\n💰 *Total estimado: $${total.toFixed(2)}*`;
+            
+            const numeroTel = "5354978188"; 
+            window.open(`https://wa.me/${numeroTel}?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+
+        function toggleBuscador() {
+            const contenedor = document.getElementById('contenedorBusqueda');
+            const input = document.getElementById('inputBusqueda');
+            contenedor.classList.toggle('activo');
+            if(contenedor.classList.contains('activo')) {
+                input.focus();
+            }
+        }
+
+        function filtrarMenu() {
+            const textoBusqueda = document.getElementById('inputBusqueda').value.toLowerCase();
+            const platos = document.getElementsByTagName('li');
+            const secciones = document.querySelectorAll('details');
+
+            for (let i = 0; i < platos.length; i++) {
+                const nombrePlato = platos[i].getAttribute('data-nombre').toLowerCase();
+                if (nombrePlato.includes(textoBusqueda)) {
+                    platos[i].style.display = ""; 
+                } else {
+                    platos[i].style.display = "none"; 
+                }
+            }
+
+            if (textoBusqueda.length > 0) {
+                secciones.forEach(sec => sec.open = true);
+            }
+        }
+    </script>
+
+</body>
+</html>
